@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+
+.affix {
+  top: 0;
+  width: 100%;
+}
+
+.affix + .container-fluid {
+  padding-top: 70px;
+}
+
+.btn {
+  white-space: normal;
+  margin-bottom: 0px;
+}
+
+.btn_commands {
+  white-space: normal;
+  margin-bottom: 10px;
+}
+
+.card-body {
+  padding: 5px;
+}

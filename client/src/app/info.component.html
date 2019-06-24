@@ -1,0 +1,40 @@
+<div [ngClass]="{'card panel-danger': info.Alarm==='On', 'card panel-default': info.Alarm != 'On'}">
+  <h3 class="card-header">{{info.Model}}</h3>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><b>Version</b></div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{info.SoftwareVersion}} {{info.SoftwareDate | date: 'shortDate' }}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><b>Serial Number</b></div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{info.SerialNumber}}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><b>Last Update</b></div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{info.LastUpdate | date: 'short'}}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><b>Mode</b></div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{info.OperationMode}}</div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"><b>Moon Phase</b></div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{info.MoonPhase}}%</div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="btn-group-justified">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onFeedPause()"><img src="../media/food.svg" height="32" width="32" /> Feed Pause</button>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onThunderstorm()"><img src="../media/thunder.svg" height="32" width="32" /> Thunderstorm</button>
+        </div>
+
+        <rs-maintenance *ngFor="let item of info.Maintenance" [maintenance]="item"></rs-maintenance>
+
+      </div>
+    </div>
+  </div>
+</div>
