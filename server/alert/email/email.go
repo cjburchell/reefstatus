@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/cjburchell/reefstatus-alert/settings"
+	"github.com/cjburchell/reefstatus/server/alert/settings"
 )
 
 // Send a email

@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/cjburchell/reefstatus/common/communication"
+	"github.com/cjburchell/reefstatus/server/settings"
+
 	"github.com/cjburchell/go-uatu"
 
-	"github.com/cjburchell/reefstatus-common/communication"
-
-	"github.com/cjburchell/reefstatus-commands/settings"
 	"github.com/gorilla/mux"
 )
 

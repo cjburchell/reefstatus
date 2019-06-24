@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cjburchell/reefstatus-alert/slack"
+	"github.com/cjburchell/reefstatus/common/data"
+	"github.com/cjburchell/reefstatus/common/profilux/types"
 
-	"github.com/cjburchell/reefstatus-alert/state"
+	"github.com/cjburchell/reefstatus/server/alert/slack"
 
-	"github.com/cjburchell/reefstatus-common/data"
-
-	"github.com/cjburchell/profilux-go/types"
+	"github.com/cjburchell/reefstatus/server/alert/state"
 )
 
 // Alarm check
