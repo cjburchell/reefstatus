@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pkg/errors"
+	"github.com/cjburchell/reefstatus/common/models"
 
-	"github.com/cjburchell/reefstatus-common/models"
+	"github.com/pkg/errors"
 
 	"github.com/go-redis/redis"
 )

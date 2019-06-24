@@ -4,14 +4,12 @@ import (
 	"fmt"
 
 	"github.com/cjburchell/reefstatus/server/alert/slack"
-
 	"github.com/cjburchell/reefstatus/server/alert/state"
-
-	"github.com/cjburchell/reefstatus/server/common/data"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 )
 
 // Reminders check
-func Reminders(controller data.ControllerService) error {
+func Reminders(controller repo.Controller) error {
 	info, err := controller.GetInfo()
 	if err != nil {
 		return err

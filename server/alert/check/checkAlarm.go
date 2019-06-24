@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cjburchell/reefstatus/common/data"
-	"github.com/cjburchell/reefstatus/common/profilux/types"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 
+	"github.com/cjburchell/reefstatus/common/profilux/types"
 	"github.com/cjburchell/reefstatus/server/alert/slack"
 
 	"github.com/cjburchell/reefstatus/server/alert/state"
 )
 
 // Alarm check
-func Alarm(controller data.ControllerService) error {
+func Alarm(controller repo.Controller) error {
 	info, err := controller.GetInfo()
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func Alarm(controller data.ControllerService) error {
 	return nil
 }
 
-func sendAlarmEmail(controller data.ControllerService, cleared bool) error {
+func sendAlarmEmail(controller repo.Controller, cleared bool) error {
 	statusTable, err := createStatusTable(controller)
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func sendAlarmEmail(controller data.ControllerService, cleared bool) error {
 	return nil
 }
 
-func findAlarmReason(controller data.ControllerService) (reason string, err error) {
+func findAlarmReason(controller repo.Controller) (reason string, err error) {
 	probes, err := controller.GetProbes()
 	if err != nil {
 		return
@@ -108,7 +108,7 @@ func findAlarmReason(controller data.ControllerService) (reason string, err erro
 	return
 }
 
-func createStatusTable(controller data.ControllerService) (table string, err error) {
+func createStatusTable(controller repo.Controller) (table string, err error) {
 	probes, err := controller.GetProbes()
 	if err != nil {
 		return

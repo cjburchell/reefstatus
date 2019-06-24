@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/cjburchell/go-uatu v0.0.0-20190613111335-704bf7438382
 	github.com/cjburchell/tools-go v0.0.0-20181126150745-9a148bb98f00
+	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/gorilla/handlers v1.4.0 // indirect
 	github.com/gorilla/mux v1.7.2 // indirect
 	github.com/nats-io/go-nats v1.7.2

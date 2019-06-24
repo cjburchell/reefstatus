@@ -3,8 +3,8 @@ package update
 import (
 	"time"
 
-	"github.com/cjburchell/reefstatus/common/data"
 	"github.com/cjburchell/reefstatus/common/models"
+	"github.com/cjburchell/reefstatus/controller/data"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 

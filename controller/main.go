@@ -13,7 +13,7 @@ import (
 	"github.com/cjburchell/reefstatus/controller/update"
 
 	"github.com/cjburchell/reefstatus/common/communication"
-	"github.com/cjburchell/reefstatus/common/data"
+	"github.com/cjburchell/reefstatus/controller/data"
 )
 
 const logRate = time.Second * 30

@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/cjburchell/go-uatu"
+	"github.com/cjburchell/reefstatus/common/communication"
 	"github.com/cjburchell/reefstatus/server/alert/check"
-	"github.com/cjburchell/reefstatus/server/settings"
 	"github.com/cjburchell/reefstatus/server/alert/slack"
 	"github.com/cjburchell/reefstatus/server/alert/state"
-	"github.com/cjburchell/reefstatus/server/common/communication"
-	"log"
+	"github.com/cjburchell/reefstatus/server/data/repo"
+	"github.com/cjburchell/reefstatus/server/settings"
 )
 
-func RunAlerts(controller ControllerService) {
+func RunAlerts(controller repo.Controller) {
 	err := slack.Setup(settings.SlackDestination)
 	if err != nil {
 		log.Fatal(err, "Unable to connect to slack")

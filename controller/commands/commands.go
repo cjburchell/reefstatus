@@ -8,7 +8,7 @@ import (
 	"github.com/cjburchell/reefstatus/controller/profilux"
 
 	"github.com/cjburchell/reefstatus/common/communication"
-	"github.com/cjburchell/reefstatus/common/data"
+	"github.com/cjburchell/reefstatus/controller/data"
 
 	"github.com/cjburchell/reefstatus/controller/settings"
 
@@ -19,7 +19,7 @@ import (
 const queueName = "Controller"
 
 // Handle setup and routing of commands
-func Handle(session communication.Session, repo data.ControllerService) {
+func Handle(session communication.SubscribeSession, repo data.ControllerService) {
 	feedPauseChannel, err := session.QueueSubscribe(communication.FeedPauseMessage, queueName)
 	if err != nil {
 		log.Errorf(err, "subscibe to %s", communication.FeedPauseMessage)
@@ -73,7 +73,7 @@ func Handle(session communication.Session, repo data.ControllerService) {
 				index  int
 				enable bool
 			}{}
-			json.Unmarshal([]byte(result), message)
+			_ = json.Unmarshal([]byte(result), message)
 			maintenance(message.index, message.enable, repo)
 		case result = <-clearLevelChannel:
 			clearLevelAlarm(result, repo)

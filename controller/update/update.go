@@ -2,7 +2,7 @@ package update
 
 import (
 	"github.com/cjburchell/go-uatu"
-	"github.com/cjburchell/reefstatus/common/data"
+	"github.com/cjburchell/reefstatus/controller/data"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 	"github.com/cjburchell/reefstatus/controller/settings"
 )
