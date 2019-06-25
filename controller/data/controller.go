@@ -73,8 +73,10 @@ func (c controller) GetInfo() (models.Info, error) {
 	return result, err
 }
 
+const controllerPath = "/api/v1/controller"
+
 func (c controller) get(path string, target interface{}) error {
-	fullPath := c.address + "/controller/" + path
+	fullPath := c.address + controllerPath + path
 	//log.Debugf("GET %s", fullPath)
 	req, err := http.NewRequest("GET", fullPath, nil)
 	if err != nil {
@@ -107,7 +109,7 @@ func (c controller) get(path string, target interface{}) error {
 }
 
 func (c controller) getID(path, id string, target interface{}) error {
-	fullPath := c.address + "/controller/" + path + "/" + id
+	fullPath := c.address + controllerPath + path + "/" + id
 	//log.Debugf("GET %s", fullPath)
 	req, err := http.NewRequest("GET", fullPath, nil)
 	if err != nil {
@@ -167,19 +169,19 @@ func (c controller) send(method string, path string, target interface{}) error {
 }
 
 func (c controller) create(path string, target interface{}) error {
-	return c.send("POST", c.address+"/controller/"+path, target)
+	return c.send("POST", c.address+controllerPath+path, target)
 }
 
 func (c controller) update(path string, target interface{}) error {
-	return c.send("PUT", c.address+"/controller/"+path, target)
+	return c.send("PUT", c.address+controllerPath+path, target)
 }
 
 func (c controller) updateID(path string, id string, target interface{}) error {
-	return c.send("PUT", c.address+"/controller/"+path+"/"+id, target)
+	return c.send("PUT", c.address+controllerPath+path+"/"+id, target)
 }
 
 func (c controller) delete(path, id string) error {
-	fullPath := c.address + "/controller/" + path + "/" + id
+	fullPath := c.address + controllerPath + path + "/" + id
 	//log.Debugf("DELETE %s", fullPath)
 	req, err := http.NewRequest("DELETE", fullPath, nil)
 	if err != nil {
@@ -425,7 +427,7 @@ func (c controller) DeleteSPort(item models.SPort) error {
 }
 
 func (c controller) UpdateAssociations() error {
-	req, err := http.NewRequest("POST", c.address+"/controller/updateAssociations", nil)
+	req, err := http.NewRequest("POST", c.address+controllerPath+"/updateAssociations", nil)
 	req.Header.Add("Authorization", fmt.Sprintf("APIKEY %s", c.token))
 	resp, err := c.client.Do(req)
 	if err != nil {

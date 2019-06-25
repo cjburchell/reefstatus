@@ -1,14 +1,13 @@
-package routes
+package controller_route
 
 import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/cjburchell/reefstatus/common/models"
+	"github.com/cjburchell/reefstatus/server/data/repo"
+
 	"github.com/cjburchell/go-uatu"
-
-	"github.com/cjburchell/reefstatus-data/repo"
-
-	"github.com/cjburchell/reefstatus-common/models"
 )
 
 func handleInfo(w http.ResponseWriter, r *http.Request, controller repo.Controller) {

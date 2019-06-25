@@ -1,8 +1,7 @@
 package communication
 
 // UpdateMessage name
-const UpdateHistoryMessage = "UpdateHistory"
-const UpdateAlertsMessage = "UpdateAlerts"
+const UpdateMessage = "Update"
 
 // FeedPauseMessage name
 const FeedPauseMessage = "FeedPause"

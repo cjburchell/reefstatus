@@ -1,22 +1,22 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-      <rs-info [info]="info"></rs-info>
+      <app-info [info]="info"></app-info>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
 
-      <ng-template [ngIf]="probes.length">
-        <h3><a href="#" (click)="isCollapsed = !isCollapsed"><img src="../media/thermometer.svg" height="32" width="32" />Probes</a> <span *ngIf="probes.IsAlarm" class="label label-danger">Alarm</span></h3>
+      <ng-template *ngIf="probes.length">
+        <h3><a href="#" (click)="isCollapsed = !isCollapsed"><img src="../assets/media/thermometer.svg" height="32" width="32" />Probes</a> <span *ngIf="probes[0].AlarmEnable" class="label label-danger">Alarm</span></h3>
         <div class="row" [ngbCollapse]="isCollapsed">
-            <rs-probe *ngFor="let probe of probes" [probe] = "probe"></rs-probe>
+          <app-probe *ngFor="let probe of probes" [probe] = "probe"></app-probe>
         </div>
       </ng-template>
 
-     <ng-template [ngIf]="levelSensors.length">
-        <h3><a href="#" (click)="isCollapsedLevelSensors = !isCollapsedLevelSensors"><img src="../media/water_level.svg" height="32" width="32" />Level Sensors</a> <span *ngIf="levelSensors.IsAlarm" class="label label-danger">Alarm</span></h3>
+      <ng-template *ngIf="levelSensors.length">
+        <h3><a href="#" (click)="isCollapsedLevelSensors = !isCollapsedLevelSensors"><img src="../assets/media/water_level.svg" height="32" width="32" />Level Sensors</a> <span *ngIf="levelSensors.AlarmEnable" class="label label-danger">Alarm</span></h3>
         <ng-container id="levelSensors" class="row" [ngbCollapse]="isCollapsedLevelSensors">
-          <div ng-repeat="let sensor of levelSensors; trackBy: $index">
-            <rs-levelSensor [sensor] = "sensor"></rs-levelSensor>
+          <div *ngFor="let sensor of levelSensors">
+            <app-level-sensor [sensor] = "sensor"></app-level-sensor>
           </div>
         </ng-container>
       </ng-template>

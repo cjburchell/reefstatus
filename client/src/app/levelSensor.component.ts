@@ -1,10 +1,18 @@
 import { Component, Input} from '@angular/core';
+import {LevelSensor} from './controller.service';
 
 @Component({
-  selector: 'rs-levelSensor',
+  selector: 'app-level-sensor',
   templateUrl: './levelSensor.component.html',
   styleUrls: []
 })
 export class LevelSensorComponent {
-  @Input() sensor;
+  @Input() sensor: LevelSensor;
+
+  startWaterChange() {
+
+  }
+
+  clearAlarm() {
+  }
 }

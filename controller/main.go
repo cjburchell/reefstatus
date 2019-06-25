@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/cjburchell/reefstatus/controller/settings"
@@ -17,6 +18,10 @@ import (
 )
 
 const logRate = time.Second * 30
+
+func Update(session communication.PublishSession, isInitial bool) error {
+	return session.Publish(communication.UpdateMessage, strconv.FormatBool(isInitial))
+}
 
 func main() {
 	err := logSettings.SetupLogger()
@@ -40,7 +45,7 @@ func main() {
 	for {
 		err = update.All(controller)
 		if err == nil {
-			err = communication.Update(session, true)
+			err = Update(session, true)
 			if err != nil {
 				log.Errorf(err, "Unable to send first update")
 			}
@@ -70,7 +75,7 @@ func main() {
 			}
 		}
 
-		err = communication.Update(session, false)
+		err = Update(session, false)
 		if err != nil {
 			log.Errorf(err, "Unable to send update")
 		}

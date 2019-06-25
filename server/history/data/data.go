@@ -3,7 +3,7 @@ package data
 import (
 	"time"
 
-	"github.com/cjburchell/reefstatus-history/model"
+	"github.com/cjburchell/reefstatus/server/history/model"
 )
 
 // HistoryData interface

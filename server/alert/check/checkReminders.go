@@ -9,7 +9,7 @@ import (
 )
 
 // Reminders check
-func Reminders(controller repo.Controller) error {
+func Reminders(controller repo.Controller, state state.StateData) error {
 	info, err := controller.GetInfo()
 	if err != nil {
 		return err

@@ -1,37 +1,26 @@
 import { Component } from '@angular/core';
-import {ControllerService, Info} from "./controller.service";
+import {ControllerService, Info, LevelSensor, Probe} from './controller.service';
 
 @Component({
-  selector: 'rs-app',
+  selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: []
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   constructor(private controller: ControllerService) {
     this.refresh();
   }
 
-  refresh(){
+  public isCollapsed = false;
+  public info: Info;
+
+  public probes: Probe[] = [];
+  public levelSensors: LevelSensor[] = [];
+  isCollapsedLevelSensors: boolean;
+
+  refresh() {
     this.controller.getInfo().subscribe((info: Info) => this.info = info);
+    this.controller.getProbes().subscribe((probes: Probe[]) => this.probes = probes);
+    this.controller.getLevelSesnsors().subscribe((levelSensors: LevelSensor[]) => this.levelSensors = levelSensors);
   }
-
-  isCollapsed = false;
-  info : Info;
-
-  probes = [{
-    DisplayName : "Temp",
-    AlarmState: 'On',
-    ConvertedValue: 22,
-    Units: "C"
-  }, {
-    DisplayName : "PH",
-    AlarmState: 'Off',
-    ConvertedValue: 12,
-    Units: "PH"
-
-  }];
-  levelSensors= [];
-  sports = [];
-  lports = [];
 }

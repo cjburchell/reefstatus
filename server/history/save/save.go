@@ -3,15 +3,15 @@ package save
 import (
 	"time"
 
-	"github.com/cjburchell/reefstatus-history/model"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 
-	"github.com/cjburchell/reefstatus-common/data"
+	"github.com/cjburchell/reefstatus/server/history/model"
 
-	historyData "github.com/cjburchell/reefstatus-history/data"
+	historyData "github.com/cjburchell/reefstatus/server/history/data"
 )
 
 // Day save data
-func Day(historyData historyData.HistoryData, controller data.ControllerService) error {
+func Day(historyData historyData.HistoryData, controller repo.Controller) error {
 	now := time.Now()
 	probes, err := controller.GetProbes()
 	if err != nil {
@@ -29,7 +29,7 @@ func Day(historyData historyData.HistoryData, controller data.ControllerService)
 }
 
 // Week save data
-func Week(historyData historyData.HistoryData, controller data.ControllerService) error {
+func Week(historyData historyData.HistoryData, controller repo.Controller) error {
 
 	now := time.Now()
 	probes, err := controller.GetProbes()
@@ -52,7 +52,7 @@ func Week(historyData historyData.HistoryData, controller data.ControllerService
 }
 
 // Year save data
-func Year(historyData historyData.HistoryData, controller data.ControllerService) error {
+func Year(historyData historyData.HistoryData, controller repo.Controller) error {
 	now := time.Now()
 	probes, err := controller.GetProbes()
 	if err != nil {

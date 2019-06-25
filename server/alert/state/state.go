@@ -8,25 +8,40 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-var session *mgo.Session
-var c *mgo.Collection
+type mongoData struct {
+	session *mgo.Session
+	c       *mgo.Collection
+}
+
+type StateData interface {
+	UpdateAlarmSent(sent bool) (bool, error)
+	UpdateReminderSent(index int, sent bool) (bool, error)
+}
+
+// New History data
+func New(address string) (StateData, error) {
+	data := mongoData{}
+	err := data.setup(address)
+	return data, err
+}
 
 const dbName = "ReefStatus"
 const stateCollection = "state"
 
-func Setup(url string) error {
-	var err error
-	session, err = mgo.Dial(url)
+func (m *mongoData) setup(address string) error {
+	session, err := mgo.Dial(address)
 	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "Settings: Error connecting to Mongo")
+		return errors.WithStack(err)
 	}
 
 	err = session.Ping()
 	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "Settings: Unable to ping mongo")
+		return errors.WithStack(err)
 	}
 
-	c = session.DB(dbName).C(stateCollection)
+	m.session = session
+	m.c = session.DB(dbName).C(stateCollection)
+
 	return nil
 }
 
@@ -36,7 +51,7 @@ type stateItem struct {
 }
 
 // UpdateAlarmSent will update the alarm sent state and return true if we updated it
-func UpdateAlarmSent(sent bool) (bool, error) {
+func (m mongoData) UpdateAlarmSent(sent bool) (bool, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"state": sent}},
 		Upsert:    true,
@@ -44,7 +59,7 @@ func UpdateAlarmSent(sent bool) (bool, error) {
 	}
 
 	var item stateItem
-	_, err := c.Find(bson.M{"_id": "alarm"}).Apply(change, &item)
+	_, err := m.c.Find(bson.M{"_id": "alarm"}).Apply(change, &item)
 	if err != nil {
 		return false, errors.WithStack(err)
 	}
@@ -52,7 +67,7 @@ func UpdateAlarmSent(sent bool) (bool, error) {
 	return item.State != sent, nil
 }
 
-func UpdateReminderSent(index int, sent bool) (bool, error) {
+func (m mongoData) UpdateReminderSent(index int, sent bool) (bool, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": bson.M{"state": sent}},
 		Upsert:    true,
@@ -60,7 +75,7 @@ func UpdateReminderSent(index int, sent bool) (bool, error) {
 	}
 
 	var item stateItem
-	_, err := c.Find(bson.M{"_id": strconv.Itoa(index)}).Apply(change, &item)
+	_, err := m.c.Find(bson.M{"_id": strconv.Itoa(index)}).Apply(change, &item)
 	if err != nil {
 		return false, errors.WithStack(err)
 	}

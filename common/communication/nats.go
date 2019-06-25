@@ -53,20 +53,6 @@ func (session natsSession) PublishData(message string, data []byte) error {
 	return nil
 }
 
-func (session *natsSession) Subscribe(message string) (chan string, error) {
-	log.Debugf("Subscribe to %s", message)
-	ch := make(chan string)
-	sub, err := session.nc.Subscribe(message, func(msg *nats.Msg) {
-		log.Debugf("Received Message %s", message)
-		ch <- string(msg.Data)
-	})
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	session.subscriptions[message] = sub
-	return ch, nil
-}
-
 func (session *natsSession) QueueSubscribe(message string, queue string) (chan string, error) {
 	log.Debugf("Queue Subscribe to %s, queue: %s", message, queue)
 	ch := make(chan string)

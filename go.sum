@@ -1,5 +1,11 @@
 github.com/cjburchell/go-uatu v0.0.0-20190613111335-704bf7438382 h1:W3rzIUtWx1xJWlBvnwMNQe0LJzvwEvQx3XoDTlmvaWU=
 github.com/cjburchell/go-uatu v0.0.0-20190613111335-704bf7438382/go.mod h1:OKlHw8ugzzn2zt1N0M4VDSOs6WYXzeJ6QO/Hxr4gilY=
+github.com/cjburchell/profilux-go v0.0.0-20181206042357-32a4b934a5cf h1:jXNGTQyCa0Mu0JX2qwEGJqoYcK0v7+lzRnuaO53LaJI=
+github.com/cjburchell/profilux-go v0.0.0-20181206042357-32a4b934a5cf/go.mod h1:jNfTacIETdExVgTFeEwBNI9yZ5GCQs/ZkpUjsp59Wnw=
+github.com/cjburchell/reefstatus-common v0.0.0-20181209145214-503dfd7a60c2 h1:JXioaC6hJfacfZsEHL07dEHAkqXqBhFZcurwU1HATuM=
+github.com/cjburchell/reefstatus-common v0.0.0-20181209145214-503dfd7a60c2/go.mod h1:+WrJalEJdX0TPsB3O1MkhuyFdwNEk/L+SJZ3/8mhL0o=
+github.com/cjburchell/reefstatus-history v0.0.0-20181210005614-a17f740e14d5 h1:P+4Ylb2eub8tljTFwQ2farnvTeFMfhdU9EMiqFxxcRA=
+github.com/cjburchell/reefstatus-history v0.0.0-20181210005614-a17f740e14d5/go.mod h1:gJJhjBBNS3fTETMLQNpeE6OJkFWtBQBru7S4dNUhG3w=
 github.com/cjburchell/tools-go v0.0.0-20181126150745-9a148bb98f00 h1:kYM2it0mrYMbpCmsnsqFEbdf47XT9RpzWyu/m9gBUCY=
 github.com/cjburchell/tools-go v0.0.0-20181126150745-9a148bb98f00/go.mod h1:aofm7KiFub/eWlMKyrg0/3tQlQSFqAway9igbRWNAX0=
 github.com/go-redis/redis v6.15.2+incompatible h1:9SpNVG76gr6InJGxoZ6IuuxaCOQwDAhzyXg+Bs+0Sb4=

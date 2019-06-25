@@ -1,22 +1,23 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Info} from './controller.service';
 
 @Component({
-  selector: 'rs-info',
+  selector: 'app-info',
   templateUrl: './info.component.html',
   styleUrls: []
 })
 export class InfoComponent {
- @Input() info;
+ @Input() info: Info;
  @Output() feedPause = new EventEmitter();
  @Output() thunderstorm = new EventEmitter();
 
-  onFeedPause(){
+  onFeedPause() {
     this.feedPause.emit();
-    console.log("FeedPause!")
+    console.log('FeedPause!');
   }
 
-  onThunderstorm(){
+  onThunderstorm() {
     this.thunderstorm.emit();
-    console.log("Thunderstorm!")
+    console.log('Thunderstorm!');
   }
 }

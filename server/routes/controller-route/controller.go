@@ -1,16 +1,15 @@
-package routes
+package controller_route
 
 import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/cjburchell/reefstatus/server/routes/token"
+
 	"github.com/cjburchell/go-uatu"
+	"github.com/cjburchell/reefstatus/server/data/associations"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 
-	"github.com/cjburchell/reefstatus-data/associations"
-
-	"github.com/cjburchell/reefstatus-data/repo"
-
-	"github.com/cjburchell/reefstatus-data/settings"
 	"github.com/gorilla/mux"
 )
 
@@ -83,9 +82,9 @@ func setupCrud(path string, r *mux.Router, resource crud) {
 }
 
 // SetupControllerRoute setup the route
-func SetupControllerRoute(r *mux.Router, c repo.Controller) {
-	controllerRoute := r.PathPrefix("/controller").Subrouter()
-	controllerRoute.Use(tokenMiddleware)
+func SetupRoute(r *mux.Router, c repo.Controller) {
+	controllerRoute := r.PathPrefix("api/v1/controller").Subrouter()
+	controllerRoute.Use(token.Middleware)
 	controllerRoute.HandleFunc("/info", func(writer http.ResponseWriter, request *http.Request) {
 		handleInfo(writer, request, c)
 	}).Methods("GET")
@@ -111,20 +110,6 @@ func SetupControllerRoute(r *mux.Router, c repo.Controller) {
 		associations.Update(c)
 		writer.WriteHeader(http.StatusOK)
 	}).Methods("POST")
-}
-
-func tokenMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		auth := request.Header.Get("Authorization")
-		if auth != "APIKEY "+settings.DataServiceToken {
-			response.WriteHeader(http.StatusUnauthorized)
-
-			log.Warnf("Unauthorized %s != %s", auth, settings.DataServiceToken)
-			return
-		}
-
-		next.ServeHTTP(response, request)
-	})
 }
 
 func handleGet(response http.ResponseWriter, url string, result interface{}, err error) {

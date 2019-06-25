@@ -5,15 +5,7 @@ import (
 )
 
 // Alert Settings
-type Alert struct {
-	SendOnReminder bool
-}
-
-// NewAlertSettings initializes the alert settings
-func NewAlertSettings() (settings Alert) {
-	settings.SendOnReminder = env.GetBool("ALERT_REMINDER_ENABLE", false)
-	return
-}
+var SendOnReminder = env.GetBool("ALERT_REMINDER_ENABLE", false)
 
 // Mail Settings
 type MailSettings struct {
@@ -35,9 +27,3 @@ func newMailSettings() (settings MailSettings) {
 }
 
 var Mail = newMailSettings()
-var PubSubAddress = env.Get("PUB_SUB_ADDRESS", "tcp://localhost:4222")
-var PubSubToken = env.Get("PUB_SUB_TOKEN", "token")
-var SlackDestination = env.Get("SLACK_DESTINATION", "")
-var MongoUrl = env.Get("MONGO_URL", "localhost")
-var DataServiceAddress = env.Get("DATA_SERVICE", "http://localhost")
-var DataServiceToken = env.Get("DATA_SERVICE_TOKEN", "token")

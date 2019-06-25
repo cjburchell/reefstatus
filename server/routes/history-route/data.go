@@ -1,28 +1,31 @@
-package routes
+package history_route
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/cjburchell/go-uatu"
+	"github.com/cjburchell/reefstatus/server/history/data"
 
-	"github.com/cjburchell/reefstatus-history/data"
+	"github.com/cjburchell/go-uatu"
 
 	"github.com/gorilla/mux"
 )
 
-var historyData data.HistoryData
-
 // SetupDataRoute setup the route
-func SetupDataRoute(r *mux.Router, h data.HistoryData) {
-	historyData = h
+func SetupRoute(r *mux.Router, h data.HistoryData) {
 	dataRoute := r.PathPrefix("/data").Subrouter()
-	dataRoute.HandleFunc("/log/{ID}", handleDayData).Methods("GET")
-	dataRoute.HandleFunc("/logYear/{ID}", handleYearData).Methods("GET")
-	dataRoute.HandleFunc("/logWeek/{ID}", handleWeekData).Methods("GET")
+	dataRoute.HandleFunc("/log/{ID}", func(writer http.ResponseWriter, request *http.Request) {
+		handleDayData(writer, request, h)
+	}).Methods("GET")
+	dataRoute.HandleFunc("/logYear/{ID}", func(writer http.ResponseWriter, request *http.Request) {
+		handleYearData(writer, request, h)
+	}).Methods("GET")
+	dataRoute.HandleFunc("/logWeek/{ID}", func(writer http.ResponseWriter, request *http.Request) {
+		handleWeekData(writer, request, h)
+	}).Methods("GET")
 }
 
-func handleDayData(w http.ResponseWriter, r *http.Request) {
+func handleDayData(w http.ResponseWriter, r *http.Request, historyData data.HistoryData) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
@@ -39,7 +42,7 @@ func handleDayData(w http.ResponseWriter, r *http.Request) {
 	w.Write(reply)
 }
 
-func handleWeekData(w http.ResponseWriter, r *http.Request) {
+func handleWeekData(w http.ResponseWriter, r *http.Request, historyData data.HistoryData) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 
@@ -56,7 +59,7 @@ func handleWeekData(w http.ResponseWriter, r *http.Request) {
 	w.Write(reply)
 }
 
-func handleYearData(w http.ResponseWriter, r *http.Request) {
+func handleYearData(w http.ResponseWriter, r *http.Request, historyData data.HistoryData) {
 	vars := mux.Vars(r)
 	id := vars["ID"]
 

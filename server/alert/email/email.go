@@ -6,9 +6,9 @@ import (
 	"net/mail"
 	"net/smtp"
 
-	"github.com/pkg/errors"
+	"github.com/cjburchell/reefstatus/server/settings"
 
-	"github.com/cjburchell/reefstatus/server/alert/settings"
+	"github.com/pkg/errors"
 )
 
 // Send a email

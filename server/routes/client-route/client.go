@@ -1,4 +1,4 @@
-package main
+package client_route
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Setup(r *mux.Router) {
+func SetupRoute(r *mux.Router) {
 
 	clientLocation := env.Get("CLIENT_LOCATION", "client/dist/ReefStatus")
 

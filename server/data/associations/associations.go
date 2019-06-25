@@ -1,10 +1,9 @@
 package associations
 
 import (
-	"github.com/cjburchell/reefstatus-common/models"
-	"github.com/cjburchell/reefstatus-data/repo"
-
-	"github.com/cjburchell/profilux-go/types"
+	"github.com/cjburchell/reefstatus/common/models"
+	"github.com/cjburchell/reefstatus/common/profilux/types"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 )
 
 func getAssociatedModeItem(mode types.PortMode, repo repo.Controller) string {

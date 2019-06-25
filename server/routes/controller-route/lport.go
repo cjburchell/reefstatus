@@ -1,12 +1,12 @@
-package routes
+package controller_route
 
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
+	"github.com/cjburchell/reefstatus/common/models"
+	"github.com/cjburchell/reefstatus/server/data/repo"
 
-	"github.com/cjburchell/reefstatus-common/models"
-	"github.com/cjburchell/reefstatus-data/repo"
+	"github.com/pkg/errors"
 )
 
 type lport struct {

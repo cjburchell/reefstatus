@@ -13,7 +13,7 @@ import (
 )
 
 // Alarm check
-func Alarm(controller repo.Controller) error {
+func Alarm(controller repo.Controller, state state.StateData) error {
 	info, err := controller.GetInfo()
 	if err != nil {
 		return err

@@ -26,13 +26,13 @@
     <div class="btn-group-justified">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onFeedPause()"><img src="../media/food.svg" height="32" width="32" /> Feed Pause</button>
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onFeedPause()"><img src="../assets/media/food.svg" height="32" width="32"  alt=""/> Feed Pause</button>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onThunderstorm()"><img src="../media/thunder.svg" height="32" width="32" /> Thunderstorm</button>
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onThunderstorm()"><img src="../assets/media/thunder.svg" height="32" width="32"  alt=""/> Thunderstorm</button>
         </div>
 
-        <rs-maintenance *ngFor="let item of info.Maintenance" [maintenance]="item"></rs-maintenance>
+        <app-maintenance *ngFor="let item of info.Maintenance" [maintenance]="item"></app-maintenance>
 
       </div>
     </div>

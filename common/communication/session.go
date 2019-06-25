@@ -8,7 +8,6 @@ type Session interface {
 }
 
 type SubscribeSession interface {
-	Subscribe(message string) (chan string, error)
 	QueueSubscribe(message string, queue string) (chan string, error)
 }
 

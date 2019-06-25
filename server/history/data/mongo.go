@@ -3,7 +3,8 @@ package data
 import (
 	"time"
 
-	"github.com/cjburchell/reefstatus-history/model"
+	"github.com/cjburchell/reefstatus/server/history/model"
+
 	"github.com/pkg/errors"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
