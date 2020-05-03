@@ -6,8 +6,7 @@ import (
 
 	"github.com/cjburchell/reefstatus/controller/settings"
 
-	"github.com/cjburchell/go-uatu"
-	logSettings "github.com/cjburchell/go-uatu/settings"
+	logger "github.com/cjburchell/uatu-go"
 
 	"github.com/cjburchell/reefstatus/controller/commands"
 
@@ -24,26 +23,23 @@ func Update(session communication.PublishSession, isInitial bool) error {
 }
 
 func main() {
-	err := logSettings.SetupLogger()
-	if err != nil {
-		log.Warn("Unable to Connect to logger")
-	}
+	log := logger.Create()
 
 	controller, err := data.NewController(settings.DataServiceAddress, settings.DataServiceToken)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to data database:")
 	}
 
-	session, err := communication.NewSession(settings.PubSubAddress, settings.PubSubToken)
+	session, err := communication.NewSession(settings.PubSubAddress, settings.PubSubToken, log)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to pub sub")
 	}
 
 	defer session.Close()
-	go commands.Handle(session, controller)
+	go commands.Handle(session, controller, log)
 
 	for {
-		err = update.All(controller)
+		err = update.All(controller, log)
 		if err == nil {
 			err = Update(session, true)
 			if err != nil {
@@ -63,13 +59,13 @@ func main() {
 		log.Debugf("RefreshSettings Sleeping for %s", logRate.String())
 		<-time.After(logRate)
 		if updateCount%20 == 19 {
-			err = update.All(controller)
+			err = update.All(controller, log)
 			if err != nil {
 				log.Errorf(err, "Unable to update")
 			}
 
 		} else {
-			err = update.State(controller)
+			err = update.State(controller, log)
 			if err != nil {
 				log.Errorf(err, "Unable to update state")
 			}

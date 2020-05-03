@@ -1,5 +1,7 @@
 package communication
 
+import logger "github.com/cjburchell/uatu-go"
+
 // Session interface
 type Session interface {
 	SubscribeSession
@@ -17,6 +19,6 @@ type PublishSession interface {
 }
 
 // NewSession creates a new session
-func NewSession(address, token string) (Session, error) {
-	return newNatsSession(address, token)
+func NewSession(address, token string, log logger.ILog) (Session, error) {
+	return newNatsSession(address, token, log)
 }

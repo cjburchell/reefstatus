@@ -6,9 +6,9 @@ import (
 
 	"github.com/cjburchell/reefstatus/server/routes/token"
 
-	"github.com/cjburchell/go-uatu"
 	"github.com/cjburchell/reefstatus/server/data/associations"
 	"github.com/cjburchell/reefstatus/server/data/repo"
+	logger "github.com/cjburchell/uatu-go"
 
 	"github.com/gorilla/mux"
 )
@@ -21,7 +21,7 @@ type crud interface {
 	GetEmpty() interface{}
 }
 
-func setupCrud(path string, r *mux.Router, resource crud) {
+func setupCrud(path string, r *mux.Router, resource crud, log logger.ILog) {
 	put := func(writer http.ResponseWriter, request *http.Request) {
 		item := resource.GetEmpty()
 		err := json.NewDecoder(request.Body).Decode(item)
@@ -43,11 +43,11 @@ func setupCrud(path string, r *mux.Router, resource crud) {
 
 	r.HandleFunc(path, func(writer http.ResponseWriter, request *http.Request) {
 		resourceItems, err := resource.GetList()
-		handleGet(writer, request.URL.String(), resourceItems, err)
+		handleGet(writer, request.URL.String(), resourceItems, err, log)
 	}).Methods("GET")
 	r.HandleFunc(path+"/{id}", func(writer http.ResponseWriter, request *http.Request) {
 		resourceItem, err := resource.Get(mux.Vars(request)["id"])
-		handleGet(writer, request.URL.String(), resourceItem, err)
+		handleGet(writer, request.URL.String(), resourceItem, err, log)
 	}).Methods("GET")
 	r.HandleFunc(path, put).Methods("POST")
 	r.HandleFunc(path+"/{id}", func(writer http.ResponseWriter, request *http.Request) {
@@ -82,28 +82,28 @@ func setupCrud(path string, r *mux.Router, resource crud) {
 }
 
 // SetupControllerRoute setup the route
-func SetupRoute(r *mux.Router, c repo.Controller) {
+func SetupRoute(r *mux.Router, c repo.Controller, log logger.ILog) {
 	controllerRoute := r.PathPrefix("api/v1/controller").Subrouter()
 	controllerRoute.Use(token.Middleware)
 	controllerRoute.HandleFunc("/info", func(writer http.ResponseWriter, request *http.Request) {
-		handleInfo(writer, request, c)
+		handleInfo(writer, request, c, log)
 	}).Methods("GET")
 	controllerRoute.HandleFunc("/info", func(writer http.ResponseWriter, request *http.Request) {
-		handleSetInfo(writer, request, c)
+		handleSetInfo(writer, request, c, log)
 	}).Methods("PUT")
 	controllerRoute.HandleFunc("/info", func(writer http.ResponseWriter, request *http.Request) {
-		handleSetInfo(writer, request, c)
+		handleSetInfo(writer, request, c, log)
 	}).Methods("POST")
 
-	setupCrud("/probe", controllerRoute, probe{c})
-	setupCrud("/levelsensor", controllerRoute, levelsensor{c})
-	setupCrud("/sport", controllerRoute, sport{c})
-	setupCrud("/lport", controllerRoute, lport{c})
-	setupCrud("/digitalinput", controllerRoute, digitalinput{c})
-	setupCrud("/pump", controllerRoute, pump{c})
-	setupCrud("/programmablelogic", controllerRoute, programmablelogic{c})
-	setupCrud("/dosingpump", controllerRoute, dosingpump{c})
-	setupCrud("/light", controllerRoute, light{c})
+	setupCrud("/probe", controllerRoute, probe{c}, log)
+	setupCrud("/levelsensor", controllerRoute, levelsensor{c}, log)
+	setupCrud("/sport", controllerRoute, sport{c}, log)
+	setupCrud("/lport", controllerRoute, lport{c}, log)
+	setupCrud("/digitalinput", controllerRoute, digitalinput{c}, log)
+	setupCrud("/pump", controllerRoute, pump{c}, log)
+	setupCrud("/programmablelogic", controllerRoute, programmablelogic{c}, log)
+	setupCrud("/dosingpump", controllerRoute, dosingpump{c}, log)
+	setupCrud("/light", controllerRoute, light{c}, log)
 
 	controllerRoute.HandleFunc("/updateAssociations", func(writer http.ResponseWriter, request *http.Request) {
 		log.Debugf("Controller Update Associations Get %s", request.URL.String())
@@ -112,7 +112,7 @@ func SetupRoute(r *mux.Router, c repo.Controller) {
 	}).Methods("POST")
 }
 
-func handleGet(response http.ResponseWriter, url string, result interface{}, err error) {
+func handleGet(response http.ResponseWriter, url string, result interface{}, err error, log logger.ILog) {
 	log.Debugf("Controller Handle Get %s", url)
 
 	if err == repo.ErrNotFound {
@@ -130,5 +130,8 @@ func handleGet(response http.ResponseWriter, url string, result interface{}, err
 	reply, _ := json.Marshal(result)
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusOK)
-	response.Write(reply)
+	_, err = response.Write(reply)
+	if err != nil {
+		log.Error(err)
+	}
 }

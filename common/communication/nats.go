@@ -1,7 +1,7 @@
 package communication
 
 import (
-	"github.com/cjburchell/go-uatu"
+	"github.com/cjburchell/uatu-go"
 	"github.com/nats-io/go-nats"
 	"github.com/pkg/errors"
 )
@@ -9,18 +9,19 @@ import (
 type natsSession struct {
 	nc            *nats.Conn
 	subscriptions map[string]*nats.Subscription
+	log log.ILog
 }
 
-func newNatsSession(address, token string) (Session, error) {
+func newNatsSession(address, token string, logger log.ILog) (Session, error) {
 	nc, err := nats.Connect(address, nats.Token(token),
 		nats.DisconnectHandler(func(nc *nats.Conn) {
-			log.Printf("Got disconnected!\n")
+			logger.Printf("Got disconnected!\n")
 		}),
 		nats.ReconnectHandler(func(nc *nats.Conn) {
-			log.Printf("Got reconnected to %v!\n", nc.ConnectedUrl())
+			logger.Printf("Got reconnected to %v!\n", nc.ConnectedUrl())
 		}),
 		nats.ClosedHandler(func(nc *nats.Conn) {
-			log.Printf("Connection closed. Reason: %q\n", nc.LastError())
+			logger.Printf("Connection closed. Reason: %q\n", nc.LastError())
 		}))
 
 	if err != nil {
@@ -28,13 +29,14 @@ func newNatsSession(address, token string) (Session, error) {
 	}
 
 	var session natsSession
+	session.log = logger
 	session.nc = nc
 	session.subscriptions = make(map[string]*nats.Subscription)
 	return &session, nil
 }
 
 func (session natsSession) Publish(message string, data string) error {
-	log.Debugf("Publish message %s, data: %s", message, data)
+	session.log.Debugf("Publish message %s, data: %s", message, data)
 	err := session.nc.Publish(message, []byte(data))
 	if err != nil {
 		return errors.WithStack(err)
@@ -44,7 +46,7 @@ func (session natsSession) Publish(message string, data string) error {
 }
 
 func (session natsSession) PublishData(message string, data []byte) error {
-	log.Debugf("Publish data %s, data: %s", message, data)
+	session.log.Debugf("Publish data %s, data: %s", message, data)
 	err := session.nc.Publish(message, data)
 	if err != nil {
 		return errors.WithStack(err)
@@ -54,10 +56,10 @@ func (session natsSession) PublishData(message string, data []byte) error {
 }
 
 func (session *natsSession) QueueSubscribe(message string, queue string) (chan string, error) {
-	log.Debugf("Queue Subscribe to %s, queue: %s", message, queue)
+	session.log.Debugf("Queue Subscribe to %s, queue: %s", message, queue)
 	ch := make(chan string)
 	sub, err := session.nc.QueueSubscribe(message, queue, func(msg *nats.Msg) {
-		log.Debugf("Received Message %s from queue: %s", message, queue)
+		session.log.Debugf("Received Message %s from queue: %s", message, queue)
 		ch <- string(msg.Data)
 	})
 	if err != nil {
@@ -70,6 +72,9 @@ func (session *natsSession) QueueSubscribe(message string, queue string) (chan s
 func (session natsSession) Close() {
 	session.nc.Close()
 	for _, sub := range session.subscriptions {
-		sub.Unsubscribe()
+		err := sub.Unsubscribe()
+		if err != nil {
+			session.log.Error(err)
+		}
 	}
 }

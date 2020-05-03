@@ -1,5 +1,7 @@
 github.com/cjburchell/go-uatu v0.0.0-20190613111335-704bf7438382 h1:W3rzIUtWx1xJWlBvnwMNQe0LJzvwEvQx3XoDTlmvaWU=
 github.com/cjburchell/go-uatu v0.0.0-20190613111335-704bf7438382/go.mod h1:OKlHw8ugzzn2zt1N0M4VDSOs6WYXzeJ6QO/Hxr4gilY=
+github.com/cjburchell/go-uatu v0.0.0-20200501021917-c4c5ddb16fdf h1:OjLJUmzv+oMV0Dit+Q72k6RyoLklV1LshmiHAva9M0s=
+github.com/cjburchell/go-uatu v0.0.0-20200501021917-c4c5ddb16fdf/go.mod h1:OKlHw8ugzzn2zt1N0M4VDSOs6WYXzeJ6QO/Hxr4gilY=
 github.com/cjburchell/profilux-go v0.0.0-20181206042357-32a4b934a5cf h1:jXNGTQyCa0Mu0JX2qwEGJqoYcK0v7+lzRnuaO53LaJI=
 github.com/cjburchell/profilux-go v0.0.0-20181206042357-32a4b934a5cf/go.mod h1:jNfTacIETdExVgTFeEwBNI9yZ5GCQs/ZkpUjsp59Wnw=
 github.com/cjburchell/reefstatus-common v0.0.0-20181209145214-503dfd7a60c2 h1:JXioaC6hJfacfZsEHL07dEHAkqXqBhFZcurwU1HATuM=
@@ -8,6 +10,10 @@ github.com/cjburchell/reefstatus-history v0.0.0-20181210005614-a17f740e14d5 h1:P
 github.com/cjburchell/reefstatus-history v0.0.0-20181210005614-a17f740e14d5/go.mod h1:gJJhjBBNS3fTETMLQNpeE6OJkFWtBQBru7S4dNUhG3w=
 github.com/cjburchell/tools-go v0.0.0-20181126150745-9a148bb98f00 h1:kYM2it0mrYMbpCmsnsqFEbdf47XT9RpzWyu/m9gBUCY=
 github.com/cjburchell/tools-go v0.0.0-20181126150745-9a148bb98f00/go.mod h1:aofm7KiFub/eWlMKyrg0/3tQlQSFqAway9igbRWNAX0=
+github.com/cjburchell/tools-go v0.0.0-20200501023012-a3ee727aa9ab h1:CX4KLh4erykEO6zuwGDKR9sqL9NK/R5keuk1ltX20Nk=
+github.com/cjburchell/tools-go v0.0.0-20200501023012-a3ee727aa9ab/go.mod h1:aofm7KiFub/eWlMKyrg0/3tQlQSFqAway9igbRWNAX0=
+github.com/cjburchell/uatu-go v0.0.0-20200501021917-c4c5ddb16fdf h1:5ePh/l9R/pJwDeQl4HEiIj5FQU5bqZ7oqxP/N1NGnEQ=
+github.com/cjburchell/uatu-go v0.0.0-20200501021917-c4c5ddb16fdf/go.mod h1:xXaJNPKOl0WpG1AvouPRVzNZGUcZsFamcMDpi2OOuK8=
 github.com/go-redis/redis v6.15.2+incompatible h1:9SpNVG76gr6InJGxoZ6IuuxaCOQwDAhzyXg+Bs+0Sb4=
 github.com/go-redis/redis v6.15.2+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
 github.com/gorilla/handlers v1.4.0 h1:XulKRWSQK5uChr4pEgSE4Tc/OcmnU9GJuSwdog/tZsA=

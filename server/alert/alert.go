@@ -1,14 +1,14 @@
 package alert
 
 import (
-	"github.com/cjburchell/go-uatu"
 	"github.com/cjburchell/reefstatus/server/alert/check"
 	"github.com/cjburchell/reefstatus/server/alert/state"
 	"github.com/cjburchell/reefstatus/server/data/repo"
 	"github.com/cjburchell/reefstatus/server/settings"
+	logger "github.com/cjburchell/uatu-go"
 )
 
-func Check(controller repo.Controller, stateRepo state.StateData) {
+func Check(controller repo.Controller, stateRepo state.StateData, log logger.ILog) {
 	if settings.SendOnReminder {
 		log.Debug("Checking reminders")
 		err := check.Reminders(controller, stateRepo)

@@ -1,6 +1,10 @@
 package main
 
 import (
+	client_route "github.com/cjburchell/reefstatus/server/routes/client-route"
+	command_route "github.com/cjburchell/reefstatus/server/routes/command-route"
+	controller_route "github.com/cjburchell/reefstatus/server/routes/controller-route"
+	history_route "github.com/cjburchell/reefstatus/server/routes/history-route"
 	"net/http"
 	"time"
 
@@ -19,17 +23,12 @@ import (
 
 	"github.com/gorilla/handlers"
 
-	"github.com/cjburchell/go-uatu"
-	logSettings "github.com/cjburchell/go-uatu/settings"
+	logger "github.com/cjburchell/uatu-go"
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	err := logSettings.SetupLogger()
-	if err != nil {
-		log.Warn("Unable to Connect to logger")
-	}
-
+	log := logger.Create()
 	controllerRepo, err := repo.NewController(settings.RedisAddress, settings.RedisPassword)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to controller repo")
@@ -45,21 +44,21 @@ func main() {
 		log.Fatal(err, "Unable to setup state repo")
 	}
 
-	session, err := communication.NewSession(settings.PubSubAddress, settings.PubSubToken)
+	session, err := communication.NewSession(settings.PubSubAddress, settings.PubSubToken, log)
 	if err != nil {
 		log.Fatal(err, "Unable to connect to Pub Sub")
 	}
 
 	defer session.Close()
 
-	go RunUpdate(controllerRepo, session, stateRepo, historyRepo)
+	go RunUpdate(controllerRepo, session, stateRepo, historyRepo, log)
 
 	r := mux.NewRouter()
-	controller_route.SetupRoute(r, controllerRepo)
-	command_route.SetupRoute(r, session)
-	history_route.SetupRoute(r, historyRepo)
+	controller_route.SetupRoute(r, controllerRepo, log)
+	command_route.SetupRoute(r, session, log)
+	history_route.SetupRoute(r, historyRepo, log)
 	client_route.SetupRoute(r)
-	loggedRouter := handlers.LoggingHandler(log.Writer{Level: log.DEBUG}, r)
+	loggedRouter := handlers.LoggingHandler(log.GetWriter(logger.DEBUG), r)
 
 	log.Print("Starting Server at port 8090")
 	srv := &http.Server{
@@ -74,7 +73,7 @@ func main() {
 	}
 }
 
-func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSession, stateRepo state.StateData, historyRepo historyData.HistoryData) {
+func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSession, stateRepo state.StateData, historyRepo historyData.HistoryData, log logger.ILog) {
 	ch, err := session.QueueSubscribe(communication.UpdateMessage, "history")
 	if err != nil {
 		log.Fatal(err, "Unable to Subscribe to UpdateMessage")
@@ -83,8 +82,8 @@ func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSe
 	firstTime := true
 	for {
 		<-ch
-		go alert.Check(controllerRepo, stateRepo)
-		go history.Update(historyRepo, controllerRepo, firstTime)
+		go alert.Check(controllerRepo, stateRepo, log)
+		go history.Update(historyRepo, controllerRepo, firstTime, log)
 		firstTime = false
 	}
 }

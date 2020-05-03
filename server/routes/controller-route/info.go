@@ -7,15 +7,15 @@ import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/server/data/repo"
 
-	"github.com/cjburchell/go-uatu"
+	logger "github.com/cjburchell/uatu-go"
 )
 
-func handleInfo(w http.ResponseWriter, r *http.Request, controller repo.Controller) {
+func handleInfo(w http.ResponseWriter, r *http.Request, controller repo.Controller, log logger.ILog) {
 	info, err := controller.GetInfo()
-	handleGet(w, r.URL.String(), info, err)
+	handleGet(w, r.URL.String(), info, err, log)
 }
 
-func handleSetInfo(writer http.ResponseWriter, request *http.Request, controller repo.Controller) {
+func handleSetInfo(writer http.ResponseWriter, request *http.Request, controller repo.Controller, log logger.ILog) {
 	log.Debugf("handleSetInfo %s", request.URL.String())
 
 	decoder := json.NewDecoder(request.Body)

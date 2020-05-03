@@ -1,14 +1,14 @@
 package update
 
 import (
-	"github.com/cjburchell/go-uatu"
 	"github.com/cjburchell/reefstatus/controller/data"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 	"github.com/cjburchell/reefstatus/controller/settings"
+	logger "github.com/cjburchell/uatu-go"
 )
 
 // All update all the data
-func All(repo data.ControllerService) error {
+func All(repo data.ControllerService, log logger.ILog) error {
 
 	log.Debug("RefreshSettings - Start")
 	profiluxController, err := profilux.NewController(settings.Connection)
@@ -76,7 +76,7 @@ func All(repo data.ControllerService) error {
 }
 
 // State update only the state data
-func State(repo data.ControllerService) error {
+func State(repo data.ControllerService, log logger.ILog) error {
 	log.Debug("RefreshState - Start")
 	profiluxController, err := profilux.NewController(settings.Connection)
 	if err != nil {
