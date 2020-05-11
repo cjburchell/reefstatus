@@ -1,4 +1,4 @@
-package data
+package service
 
 import (
 	"bytes"
@@ -14,8 +14,8 @@ import (
 // ErrNotFound when resource is not found
 var ErrNotFound = fmt.Errorf("not found")
 
-// ControllerService interface
-type ControllerService interface {
+// Controller interface
+type Controller interface {
 	GetInfo() (models.Info, error)
 	GetDigitalInputs() ([]models.DigitalInput, error)
 	GetDosingPumps() ([]models.DosingPump, error)
@@ -442,7 +442,7 @@ func (c controller) UpdateAssociations() error {
 }
 
 // NewController creates a new controller
-func NewController(address, token string) (ControllerService, error) {
+func NewController(address, token string) (Controller, error) {
 	client := &http.Client{}
 	return &controller{client, address, token}, nil
 }

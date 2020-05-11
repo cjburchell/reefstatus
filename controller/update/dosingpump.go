@@ -3,11 +3,11 @@ package update
 import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/common/profilux/types"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
-func dosingPumps(profiluxController *profilux.Controller, repo data.ControllerService) error {
+func dosingPumps(profiluxController *profilux.Controller, repo service.Controller) error {
 
 	count, err := profiluxController.GetTimerCount()
 	if err != nil {
@@ -17,11 +17,11 @@ func dosingPumps(profiluxController *profilux.Controller, repo data.ControllerSe
 	for i := 0; i < count; i++ {
 		pump, err := repo.GetDosingPump(models.GetID(models.DosingPumpType, i))
 
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 		settings, err := profiluxController.GetTimerSettings(i)
 		if err != nil {
 			return err

@@ -2,18 +2,18 @@ package update
 
 import (
 	"github.com/cjburchell/reefstatus/common/models"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
-func currentPumps(controller *profilux.Controller, repo data.ControllerService) error {
+func currentPumps(controller *profilux.Controller, repo service.Controller) error {
 	for i := 0; i < controller.GetCurrentPumpCount(); i++ {
 		pump, err := repo.GetCurrentPump(models.GetID(models.CurrentPumpType, i))
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 		isAssigned, err := controller.GetIsCurrentPumpAssigned(i)
 
 		if isAssigned {

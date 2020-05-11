@@ -17,7 +17,7 @@ type MailSettings struct {
 }
 
 // NewMailSettings initializes the mail settings
-func newMailSettings() (settings MailSettings) {
+func GetMailSettings() (settings MailSettings) {
 	settings.UserName = env.Get("ALERT_MAIL_USERNAME", "reefstatusalert")
 	settings.Password = env.Get("ALERT_MAIL_PASSWORD", "")
 	settings.Server = env.Get("ALERT_MAIL_SERVER", "smtp.gmail.com:587")
@@ -25,5 +25,3 @@ func newMailSettings() (settings MailSettings) {
 	settings.From = env.Get("ALERT_MAIL_From", "reefstatusalert@gmail.com")
 	return
 }
-
-var Mail = newMailSettings()

@@ -13,7 +13,7 @@ import (
 	"github.com/cjburchell/reefstatus/controller/update"
 
 	"github.com/cjburchell/reefstatus/common/communication"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 )
 
 const logRate = time.Second * 30
@@ -25,7 +25,7 @@ func Update(session communication.PublishSession, isInitial bool) error {
 func main() {
 	log := logger.Create()
 
-	controller, err := data.NewController(settings.DataServiceAddress, settings.DataServiceToken)
+	controller, err := service.NewController(settings.DataServiceAddress, settings.DataServiceToken)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to data database:")
 	}
