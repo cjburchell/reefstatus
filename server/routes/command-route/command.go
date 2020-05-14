@@ -19,10 +19,12 @@ import (
 var session communication.Session
 
 // SetupCommandRoute setup the route
-func SetupRoute(r *mux.Router, s communication.Session, log logger.ILog) {
+func SetupRoute(r *mux.Router, s communication.Session, log logger.ILog, dataServiceToken string) {
 	session = s
 	commandRoute := r.PathPrefix("api/v1/command").Subrouter()
-	commandRoute.Use(token.Middleware)
+	commandRoute.Use(func(handler http.Handler) http.Handler {
+		return token.Middleware(handler, dataServiceToken)
+	})
 	commandRoute.HandleFunc("/feedpause", func(writer http.ResponseWriter, request *http.Request) {
 		handleFeedPause(writer, request, s, log)
 	}).Methods("POST")

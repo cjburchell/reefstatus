@@ -1,15 +1,15 @@
 package communication
 
 import (
-	"github.com/cjburchell/uatu-go"
-	"github.com/nats-io/go-nats"
+	log "github.com/cjburchell/uatu-go"
+	"github.com/nats-io/nats.go"
 	"github.com/pkg/errors"
 )
 
 type natsSession struct {
 	nc            *nats.Conn
 	subscriptions map[string]*nats.Subscription
-	log log.ILog
+	log           log.ILog
 }
 
 func newNatsSession(address, token string, logger log.ILog) (Session, error) {

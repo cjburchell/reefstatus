@@ -2,14 +2,12 @@ package token
 
 import (
 	"net/http"
-
-	"github.com/cjburchell/reefstatus/server/settings"
 )
 
-func Middleware(next http.Handler) http.Handler {
+func Middleware(next http.Handler, dataServiceToken string) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		auth := request.Header.Get("Authorization")
-		if auth != "APIKEY "+settings.DataServiceToken {
+		if auth != "APIKEY "+dataServiceToken {
 			response.WriteHeader(http.StatusUnauthorized)
 			return
 		}
