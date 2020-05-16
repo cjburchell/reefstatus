@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	logSettings "github.com/cjburchell/uatu-go/settings"
+
 	"github.com/cjburchell/settings-go"
 	"github.com/cjburchell/tools-go/env"
 
@@ -27,7 +29,7 @@ func Update(session communication.PublishSession, isInitial bool) error {
 
 func main() {
 	set := settings.Get(env.Get("ConfigFile", ""))
-	log := logger.Create(set)
+	log := logger.Create(logSettings.Get(set.GetSection("Logging")))
 	appConfig := appSettings.Get(set)
 
 	controller, err := service.NewController(appConfig.DataServiceAddress, appConfig.DataServiceToken)

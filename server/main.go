@@ -28,12 +28,13 @@ import (
 	"github.com/gorilla/handlers"
 
 	logger "github.com/cjburchell/uatu-go"
+	logSettings "github.com/cjburchell/uatu-go/settings"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	set := settings.Get(env.Get("ConfigFile", ""))
-	log := logger.Create(set)
+	log := logger.Create(logSettings.Get(set.GetSection("Logging")))
 	appConfig := appSettings.Get(set)
 
 	controllerRepo, err := repo.NewController(appConfig.RedisAddress, appConfig.RedisPassword)
