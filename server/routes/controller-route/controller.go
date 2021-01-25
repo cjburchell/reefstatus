@@ -83,7 +83,7 @@ func setupCrud(path string, r *mux.Router, resource crud, log logger.ILog) {
 
 // SetupControllerRoute setup the route
 func SetupRoute(r *mux.Router, c repo.Controller, log logger.ILog, dataServiceToken string) {
-	controllerRoute := r.PathPrefix("api/v1/controller").Subrouter()
+	controllerRoute := r.PathPrefix("/api/v1/controller").Subrouter()
 	controllerRoute.Use(func(handler http.Handler) http.Handler {
 		return token.Middleware(handler, dataServiceToken)
 	})
