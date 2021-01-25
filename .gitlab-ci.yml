@@ -3,7 +3,9 @@ image: golang:1.14
 variables:
   VERSION: 2.0.0
   IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-  CONTROLER_TAG: $CI_REGISTRY_IMAGE-controller/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+  CONTROLER_IMAGE: $CI_REGISTRY_IMAGE/controller
+  CONTROLER_TAG: $CONTROLER_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+
 
 before_script:
   - export GO_PROJECT_PATH="$GOPATH/src/github.com/$CI_PROJECT_NAMESPACE"
@@ -101,11 +103,11 @@ docker-build-master-controller:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE-controller" -f Dockerfile.controller .
-    - docker push $CI_REGISTRY_IMAGE-controller
-    - docker tag $CI_REGISTRY_IMAGE-controller $CI_REGISTRY_IMAGE-controller:$VERSION
-    - docker push $CI_REGISTRY_IMAGE-controller:$VERSION
-    - docker tag $CI_REGISTRY_IMAGE-controller $CONTROLER_TAG
+    - docker build --pull -t "$CONTROLER_IMAGE" -f Dockerfile.controller .
+    - docker push $CONTROLER_IMAGE
+    - docker tag $CONTROLER_IMAGE $CONTROLER_IMAGE:$VERSION
+    - docker push $CONTROLER_IMAGE:$VERSION
+    - docker tag $CONTROLER_IMAGE $CONTROLER_TAG
     - docker push $CONTROLER_TAG
   only:
     - master
