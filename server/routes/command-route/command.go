@@ -11,7 +11,7 @@ import (
 
 	"github.com/cjburchell/reefstatus/common/communication"
 
-	"github.com/cjburchell/go-uatu"
+	logger "github.com/cjburchell/uatu-go"
 
 	"github.com/gorilla/mux"
 )
@@ -19,32 +19,34 @@ import (
 var session communication.Session
 
 // SetupCommandRoute setup the route
-func SetupRoute(r *mux.Router, s communication.Session) {
+func SetupRoute(r *mux.Router, s communication.Session, log logger.ILog, dataServiceToken string) {
 	session = s
 	commandRoute := r.PathPrefix("api/v1/command").Subrouter()
-	commandRoute.Use(token.Middleware)
+	commandRoute.Use(func(handler http.Handler) http.Handler {
+		return token.Middleware(handler, dataServiceToken)
+	})
 	commandRoute.HandleFunc("/feedpause", func(writer http.ResponseWriter, request *http.Request) {
-		handleFeedPasue(writer, request, s)
+		handleFeedPause(writer, request, s, log)
 	}).Methods("POST")
 	commandRoute.HandleFunc("/thunderstorm", func(writer http.ResponseWriter, request *http.Request) {
-		handleThunderstorm(writer, request, s)
+		handleThunderstorm(writer, request, s, log)
 	}).Methods("POST")
 	commandRoute.HandleFunc("/resetReminder/{Index}", func(writer http.ResponseWriter, request *http.Request) {
-		handleResetReminder(writer, request, s)
+		handleResetReminder(writer, request, s, log)
 	}).Methods("POST")
 	commandRoute.HandleFunc("/maintenance/{Index}", func(writer http.ResponseWriter, request *http.Request) {
-		handleMaintenance(writer, request, s)
+		handleMaintenance(writer, request, s, log)
 	}).Methods("POST")
 	commandRoute.HandleFunc("/clearlevelalarm/{ID}", func(writer http.ResponseWriter, request *http.Request) {
-		handleClearLevelAlarm(writer, request, s)
+		handleClearLevelAlarm(writer, request, s, log)
 	}).Methods("POST")
 	commandRoute.HandleFunc("/startwaterchange/{ID}", func(writer http.ResponseWriter, request *http.Request) {
-		handleStartWaterChange(writer, request, s)
+		handleStartWaterChange(writer, request, s, log)
 	}).Methods("POST")
 }
 
-func handleFeedPasue(w http.ResponseWriter, r *http.Request, session communication.Session) {
-	log.Printf("handleFeedPasue %s", r.URL.String())
+func handleFeedPause(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
+	log.Printf("handleFeedPause %s", r.URL.String())
 	var body []byte
 	r.Body.Read(body)
 	var enable bool
@@ -56,7 +58,7 @@ func handleFeedPasue(w http.ResponseWriter, r *http.Request, session communicati
 	w.Write(reply)
 }
 
-func handleThunderstorm(w http.ResponseWriter, r *http.Request, session communication.Session) {
+func handleThunderstorm(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
 	log.Printf("handleThunderstorm %s", r.URL.String())
 	var body []byte
 	r.Body.Read(body)
@@ -69,7 +71,7 @@ func handleThunderstorm(w http.ResponseWriter, r *http.Request, session communic
 	w.Write(reply)
 }
 
-func handleResetReminder(w http.ResponseWriter, r *http.Request, session communication.Session) {
+func handleResetReminder(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
 	log.Printf("handleResetReminder %s", r.URL.String())
 	vars := mux.Vars(r)
 	index, _ := strconv.Atoi(vars["Index"])
@@ -79,7 +81,7 @@ func handleResetReminder(w http.ResponseWriter, r *http.Request, session communi
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(reply)
 }
-func handleMaintenance(w http.ResponseWriter, r *http.Request, session communication.Session) {
+func handleMaintenance(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
 	log.Printf("handleMaintenance %s", r.URL.String())
 	vars := mux.Vars(r)
 	index, _ := strconv.Atoi(vars["Index"])
@@ -93,7 +95,7 @@ func handleMaintenance(w http.ResponseWriter, r *http.Request, session communica
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(reply)
 }
-func handleClearLevelAlarm(w http.ResponseWriter, r *http.Request, session communication.Session) {
+func handleClearLevelAlarm(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
 	log.Printf("handleClearLevelAlarm %s", r.URL.String())
 	vars := mux.Vars(r)
 	id, _ := vars["ID"]
@@ -103,7 +105,7 @@ func handleClearLevelAlarm(w http.ResponseWriter, r *http.Request, session commu
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(reply)
 }
-func handleStartWaterChange(w http.ResponseWriter, r *http.Request, session communication.Session) {
+func handleStartWaterChange(w http.ResponseWriter, r *http.Request, session communication.Session, log logger.ILog) {
 	log.Printf("handleThunderstorm %s", r.URL.String())
 	vars := mux.Vars(r)
 	id, _ := vars["ID"]

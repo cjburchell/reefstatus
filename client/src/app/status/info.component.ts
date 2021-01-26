@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import {Info} from './controller.service';
+import {Info} from '../services/contracts/contracts';
 
 @Component({
   selector: 'app-info',
@@ -7,16 +7,16 @@ import {Info} from './controller.service';
   styleUrls: []
 })
 export class InfoComponent {
- @Input() info: Info;
+ @Input() info: Info | undefined;
  @Output() feedPause = new EventEmitter();
  @Output() thunderstorm = new EventEmitter();
 
-  onFeedPause() {
+  onFeedPause(): void {
     this.feedPause.emit();
     console.log('FeedPause!');
   }
 
-  onThunderstorm() {
+  onThunderstorm(): void {
     this.thunderstorm.emit();
     console.log('Thunderstorm!');
   }

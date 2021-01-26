@@ -4,18 +4,18 @@ import (
 	"time"
 
 	"github.com/cjburchell/reefstatus/common/models"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
-func info(controller *profilux.Controller, repo data.ControllerService) error {
+func info(controller *profilux.Controller, repo service.Controller) error {
 
 	info, err := repo.GetInfo()
-	if err != nil && err != data.ErrNotFound {
+	if err != nil && err != service.ErrNotFound {
 		return err
 	}
 
-	found := err != data.ErrNotFound
+	found := err != service.ErrNotFound
 
 	info.LastUpdate = time.Now()
 
@@ -172,7 +172,7 @@ func updateReminder(controller *profilux.Controller, info *models.Info, index in
 }
 
 // InfoState update
-func InfoState(controller *profilux.Controller, repo data.ControllerService) error {
+func InfoState(controller *profilux.Controller, repo service.Controller) error {
 	info, err := repo.GetInfo()
 	if err != nil {
 		return err

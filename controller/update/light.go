@@ -2,7 +2,7 @@ package update
 
 import (
 	"github.com/cjburchell/reefstatus/common/models"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
@@ -45,7 +45,7 @@ func lightUpdateState(light *models.Light, controller *profilux.Controller) erro
 	return nil
 }
 
-func lights(profiluxController *profilux.Controller, repo data.ControllerService) error {
+func lights(profiluxController *profilux.Controller, repo service.Controller) error {
 	count, err := profiluxController.GetLightCount()
 	if err != nil {
 		return err
@@ -54,10 +54,10 @@ func lights(profiluxController *profilux.Controller, repo data.ControllerService
 	for i := 0; i < count; i++ {
 		light, err := repo.GetLight(models.GetID(models.LightType, i))
 
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 		isActive, err := profiluxController.GetIsLightActive(i)
 		if err != nil {
 			return err

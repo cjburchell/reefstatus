@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import {ControllerService, Info, LevelSensor, Probe} from './controller.service';
+import {ControllerService} from './services/controller.service';
+import {Info, LevelSensor, Probe} from './services/contracts/contracts';
 
 @Component({
   selector: 'app-root',
@@ -8,19 +9,19 @@ import {ControllerService, Info, LevelSensor, Probe} from './controller.service'
 })
 export class AppComponent {
   constructor(private controller: ControllerService) {
-    this.refresh();
+    this.refresh().then(() => {});
   }
 
   public isCollapsed = false;
-  public info: Info;
+  public info: Info | undefined;
 
   public probes: Probe[] = [];
   public levelSensors: LevelSensor[] = [];
-  isCollapsedLevelSensors: boolean;
+  isCollapsedLevelSensors: boolean | undefined;
 
-  refresh() {
-    this.controller.getInfo().subscribe((info: Info) => this.info = info);
-    this.controller.getProbes().subscribe((probes: Probe[]) => this.probes = probes);
-    this.controller.getLevelSesnsors().subscribe((levelSensors: LevelSensor[]) => this.levelSensors = levelSensors);
+  async refresh(): Promise<void> {
+    this.info = await this.controller.getInfo();
+    this.probes = await this.controller.getProbes();
+    this.levelSensors = await this.controller.getLevelSesnsors();
   }
 }

@@ -4,6 +4,15 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/cjburchell/settings-go"
+
+	clientRoute "github.com/cjburchell/reefstatus/server/routes/client-route"
+	commandRoute "github.com/cjburchell/reefstatus/server/routes/command-route"
+	controllerRoute "github.com/cjburchell/reefstatus/server/routes/controller-route"
+	historyRoute "github.com/cjburchell/reefstatus/server/routes/history-route"
+	appSettings "github.com/cjburchell/reefstatus/server/settings"
+	"github.com/cjburchell/tools-go/env"
+
 	"github.com/cjburchell/reefstatus/server/history"
 
 	"github.com/cjburchell/reefstatus/server/alert"
@@ -13,53 +22,51 @@ import (
 	"github.com/cjburchell/reefstatus/common/communication"
 
 	"github.com/cjburchell/reefstatus/server/data/repo"
-	"github.com/cjburchell/reefstatus/server/settings"
 
 	historyData "github.com/cjburchell/reefstatus/server/history/data"
 
 	"github.com/gorilla/handlers"
 
-	"github.com/cjburchell/go-uatu"
-	logSettings "github.com/cjburchell/go-uatu/settings"
+	logger "github.com/cjburchell/uatu-go"
+	logSettings "github.com/cjburchell/uatu-go/settings"
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	err := logSettings.SetupLogger()
-	if err != nil {
-		log.Warn("Unable to Connect to logger")
-	}
+	set := settings.Get(env.Get("ConfigFile", ""))
+	log := logger.Create(logSettings.Get(set.GetSection("Logging")))
+	appConfig := appSettings.Get(set)
 
-	controllerRepo, err := repo.NewController(settings.RedisAddress, settings.RedisPassword)
+	controllerRepo, err := repo.NewController(appConfig.RedisAddress, appConfig.RedisPassword)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to controller repo")
 	}
 
-	historyRepo, err := historyData.New(settings.MongoUrl)
+	historyRepo, err := historyData.New(appConfig.MongoUrl)
 	if err != nil {
 		log.Fatal(err, "Unable to Connect to history database")
 	}
 
-	stateRepo, err := state.New(settings.MongoUrl)
+	stateRepo, err := state.New(appConfig.MongoUrl)
 	if err != nil {
 		log.Fatal(err, "Unable to setup state repo")
 	}
 
-	session, err := communication.NewSession(settings.PubSubAddress, settings.PubSubToken)
+	session, err := communication.NewSession(appConfig.PubSubAddress, appConfig.PubSubToken, log)
 	if err != nil {
 		log.Fatal(err, "Unable to connect to Pub Sub")
 	}
 
 	defer session.Close()
 
-	go RunUpdate(controllerRepo, session, stateRepo, historyRepo)
+	go RunUpdate(controllerRepo, session, stateRepo, historyRepo, log, appConfig)
 
 	r := mux.NewRouter()
-	controller_route.SetupRoute(r, controllerRepo)
-	command_route.SetupRoute(r, session)
-	history_route.SetupRoute(r, historyRepo)
-	client_route.SetupRoute(r)
-	loggedRouter := handlers.LoggingHandler(log.Writer{Level: log.DEBUG}, r)
+	controllerRoute.SetupRoute(r, controllerRepo, log, appConfig.DataServiceToken)
+	commandRoute.SetupRoute(r, session, log, appConfig.DataServiceToken)
+	historyRoute.SetupRoute(r, historyRepo, log)
+	clientRoute.SetupRoute(r)
+	loggedRouter := handlers.LoggingHandler(log.GetWriter(logger.DEBUG), r)
 
 	log.Print("Starting Server at port 8090")
 	srv := &http.Server{
@@ -74,7 +81,7 @@ func main() {
 	}
 }
 
-func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSession, stateRepo state.StateData, historyRepo historyData.HistoryData) {
+func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSession, stateRepo state.StateData, historyRepo historyData.HistoryData, log logger.ILog, config appSettings.Config) {
 	ch, err := session.QueueSubscribe(communication.UpdateMessage, "history")
 	if err != nil {
 		log.Fatal(err, "Unable to Subscribe to UpdateMessage")
@@ -83,8 +90,8 @@ func RunUpdate(controllerRepo repo.Controller, session communication.SubscribeSe
 	firstTime := true
 	for {
 		<-ch
-		go alert.Check(controllerRepo, stateRepo)
-		go history.Update(historyRepo, controllerRepo, firstTime)
+		go alert.Check(controllerRepo, stateRepo, log, config.SendOnReminder, config.SlackDestination)
+		go history.Update(historyRepo, controllerRepo, firstTime, log)
 		firstTime = false
 	}
 }

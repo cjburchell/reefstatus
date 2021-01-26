@@ -13,7 +13,7 @@ import (
 )
 
 // Alarm check
-func Alarm(controller repo.Controller, state state.StateData) error {
+func Alarm(controller repo.Controller, state state.StateData, slackDestination string) error {
 	info, err := controller.GetInfo()
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func Alarm(controller repo.Controller, state state.StateData) error {
 		}
 
 		if updated {
-			return sendAlarmEmail(controller, false)
+			return sendAlarmEmail(controller, false, slackDestination)
 		}
 	} else {
 		updated, err := state.UpdateAlarmSent(false)
@@ -35,14 +35,14 @@ func Alarm(controller repo.Controller, state state.StateData) error {
 			return err
 		}
 		if updated {
-			return sendAlarmEmail(controller, true)
+			return sendAlarmEmail(controller, true, slackDestination)
 		}
 	}
 
 	return nil
 }
 
-func sendAlarmEmail(controller repo.Controller, cleared bool) error {
+func sendAlarmEmail(controller repo.Controller, cleared bool, slackDestination string) error {
 	statusTable, err := createStatusTable(controller)
 	if err != nil {
 		return err
@@ -55,13 +55,13 @@ func sendAlarmEmail(controller repo.Controller, cleared bool) error {
 		}
 
 		message := fmt.Sprintf("Alarm Detected %s\nReasons\n%s\n%s", time.Now().Format("2006-01-02 15:04:05 MST"), reason, statusTable)
-		err = slack.PrintMessage(message)
+		err = slack.PrintMessage(message, slackDestination)
 		if err != nil {
 			return err
 		}
 
 	} else {
-		err = slack.PrintMessage(fmt.Sprintf("Alarm Cleared %s\n%s", time.Now().Format("2006-01-02 15:04:05 MST"), statusTable))
+		err = slack.PrintMessage(fmt.Sprintf("Alarm Cleared %s\n%s", time.Now().Format("2006-01-02 15:04:05 MST"), statusTable), slackDestination)
 		if err != nil {
 			return err
 		}

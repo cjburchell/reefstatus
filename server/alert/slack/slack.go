@@ -6,12 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cjburchell/reefstatus/server/settings"
-
 	"github.com/pkg/errors"
 )
 
-func PrintMessage(message string) error {
+func PrintMessage(message string, slackDestination string) error {
 	jsonValue, err := json.Marshal(struct {
 		Text string `json:"text"`
 	}{
@@ -22,13 +20,13 @@ func PrintMessage(message string) error {
 		return errors.WithStack(err)
 	}
 
-	resp, err := http.Post(settings.SlackDestination, "application/json", bytes.NewBuffer(jsonValue))
+	resp, err := http.Post(slackDestination, "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.WithStack(fmt.Errorf("http request to slack %s error: %d", settings.SlackDestination, resp.StatusCode))
+		return errors.WithStack(fmt.Errorf("http request to slack %s error: %d", slackDestination, resp.StatusCode))
 	}
 
 	return nil

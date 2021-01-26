@@ -3,7 +3,7 @@ package update
 import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/common/profilux/types"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
@@ -21,7 +21,7 @@ func programmableLogicUpdate(logic *models.ProgrammableLogic, controller *profil
 	return err
 }
 
-func programmableLogic(profiluxController *profilux.Controller, repo data.ControllerService) error {
+func programmableLogic(profiluxController *profilux.Controller, repo service.Controller) error {
 	count, err := profiluxController.GetProgrammableLogicCount()
 	if err != nil {
 		return err
@@ -29,11 +29,11 @@ func programmableLogic(profiluxController *profilux.Controller, repo data.Contro
 
 	for i := 0; i < count; i++ {
 		logic, err := repo.GetProgrammableLogic(models.GetID(models.ProgrammableLogicType, i))
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 
 		input1, err := profiluxController.GetProgramLogicInput(0, i)
 		if err != nil {

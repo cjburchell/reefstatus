@@ -1,12 +1,12 @@
-FROM golang:1.12 as serverbuilder
+FROM golang:1.14 as serverbuilder
 WORKDIR /code
 COPY . .
-WORKDIR /code/controler
+WORKDIR /code/controller
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main
 
 FROM scratch
 
-COPY --from=serverbuilder /code/controler/main  /server/main
+COPY --from=serverbuilder /code/controller/main  /server/main
 
 WORKDIR  /server
 

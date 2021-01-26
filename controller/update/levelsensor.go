@@ -3,7 +3,7 @@ package update
 import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/common/profilux/types"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
@@ -90,7 +90,7 @@ func levelSensorUpdateState(sensor *models.LevelSensor, controller *profilux.Con
 }
 
 // LevelSensors update the state
-func LevelSensors(profiluxController *profilux.Controller, repo data.ControllerService) error {
+func LevelSensors(profiluxController *profilux.Controller, repo service.Controller) error {
 	count, err := profiluxController.GetLevelSenosrCount()
 	if err != nil {
 		return err
@@ -102,11 +102,11 @@ func LevelSensors(profiluxController *profilux.Controller, repo data.ControllerS
 		}
 
 		sensor, err := repo.GetLevelSensor(models.GetID(models.LevelSensorType, i))
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return nil
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 		if mode != types.LevelSensorNotEnabled {
 			if !found {
 				sensor = models.NewLevelSensor(i)

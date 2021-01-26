@@ -8,13 +8,13 @@ import (
 	historyData "github.com/cjburchell/reefstatus/server/history/data"
 	"github.com/cjburchell/reefstatus/server/history/save"
 
-	"github.com/cjburchell/go-uatu"
+	logger "github.com/cjburchell/uatu-go"
 )
 
 const hourLogRate = time.Hour
 const dayLogRate = time.Hour * 24
 
-func Update(history historyData.HistoryData, controller repo.Controller, firstTime bool) {
+func Update(history historyData.HistoryData, controller repo.Controller, firstTime bool, log logger.ILog) {
 
 	log.Debug("Saving Day Data")
 	err := save.Day(history, controller)
@@ -23,12 +23,12 @@ func Update(history historyData.HistoryData, controller repo.Controller, firstTi
 	}
 
 	if firstTime {
-		go updateWeekHistory(history, controller)
-		go updateYearHistory(history, controller)
+		go updateWeekHistory(history, controller, log)
+		go updateYearHistory(history, controller, log)
 	}
 }
 
-func updateWeekHistory(historyData historyData.HistoryData, controller repo.Controller) {
+func updateWeekHistory(historyData historyData.HistoryData, controller repo.Controller, log logger.ILog) {
 	lastHourSavedTime, err := historyData.GetLastTimeWeekDataWasSaved()
 	if err != nil {
 		log.Error(err)
@@ -64,7 +64,7 @@ func updateWeekHistory(historyData historyData.HistoryData, controller repo.Cont
 	}
 }
 
-func updateYearHistory(historyData historyData.HistoryData, controller repo.Controller) {
+func updateYearHistory(historyData historyData.HistoryData, controller repo.Controller, log logger.ILog) {
 	lastHourSavedTime, err := historyData.GetLastTimeYearDataWasSaved()
 	if err != nil {
 		log.Error(err)

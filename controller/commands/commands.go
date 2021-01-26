@@ -8,18 +8,16 @@ import (
 	"github.com/cjburchell/reefstatus/controller/profilux"
 
 	"github.com/cjburchell/reefstatus/common/communication"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 
-	"github.com/cjburchell/reefstatus/controller/settings"
-
-	"github.com/cjburchell/go-uatu"
 	"github.com/cjburchell/reefstatus/controller/update"
+	logger "github.com/cjburchell/uatu-go"
 )
 
 const queueName = "Controller"
 
 // Handle setup and routing of commands
-func Handle(session communication.SubscribeSession, repo data.ControllerService) {
+func Handle(session communication.SubscribeSession, repo service.Controller, log logger.ILog, config profilux.Settings) {
 	feedPauseChannel, err := session.QueueSubscribe(communication.FeedPauseMessage, queueName)
 	if err != nil {
 		log.Errorf(err, "subscibe to %s", communication.FeedPauseMessage)
@@ -61,31 +59,30 @@ func Handle(session communication.SubscribeSession, repo data.ControllerService)
 		select {
 		case result = <-feedPauseChannel:
 			enabled, _ := strconv.ParseBool(result)
-			feedPause(enabled, repo)
+			feedPause(enabled, repo, log, config)
 		case result = <-thunderstormChannel:
 			duration, _ := strconv.Atoi(result)
-			thunderstorm(duration, repo)
+			thunderstorm(duration, repo, log, config)
 		case result = <-resetReminderChannel:
 			index, _ := strconv.Atoi(result)
-			resetReminder(index, repo)
+			resetReminder(index, repo, log, config)
 		case result = <-maintenanceChannel:
 			message := struct {
 				index  int
 				enable bool
 			}{}
-			_ = json.Unmarshal([]byte(result), message)
-			maintenance(message.index, message.enable, repo)
+			_ = json.Unmarshal([]byte(result), &message)
+			maintenance(message.index, message.enable, repo, log, config)
 		case result = <-clearLevelChannel:
-			clearLevelAlarm(result, repo)
+			clearLevelAlarm(result, repo, log, config)
 		case result = <-waterChangeChannel:
-			waterChange(result, repo)
+			waterChange(result, repo, log, config)
 		}
 	}
 
 }
-
-func feedPause(bool bool, repo data.ControllerService) {
-	profiluxController, err := profilux.NewController(settings.Connection)
+func feedPause(bool bool, repo service.Controller, log logger.ILog, config profilux.Settings) {
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "unable to connect")
 		return
@@ -105,8 +102,8 @@ func feedPause(bool bool, repo data.ControllerService) {
 		return
 	}
 }
-func thunderstorm(duration int, repo data.ControllerService) {
-	profiluxController, err := profilux.NewController(settings.Connection)
+func thunderstorm(duration int, repo service.Controller, log logger.ILog, config profilux.Settings) {
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "Unable to connect")
 		return
@@ -126,7 +123,7 @@ func thunderstorm(duration int, repo data.ControllerService) {
 		return
 	}
 }
-func resetReminder(index int, repo data.ControllerService) {
+func resetReminder(index int, repo service.Controller, log logger.ILog, config profilux.Settings) {
 
 	var reminder *models.Reminder
 
@@ -148,7 +145,7 @@ func resetReminder(index int, repo data.ControllerService) {
 		return
 	}
 
-	profiluxController, err := profilux.NewController(settings.Connection)
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "unable to connect")
 		return
@@ -177,8 +174,8 @@ func resetReminder(index int, repo data.ControllerService) {
 		return
 	}
 }
-func maintenance(index int, enable bool, repo data.ControllerService) {
-	profiluxController, err := profilux.NewController(settings.Connection)
+func maintenance(index int, enable bool, repo service.Controller, log logger.ILog, config profilux.Settings) {
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "unable to connect")
 		return
@@ -217,7 +214,7 @@ func maintenance(index int, enable bool, repo data.ControllerService) {
 		return
 	}
 }
-func clearLevelAlarm(id string, repo data.ControllerService) {
+func clearLevelAlarm(id string, repo service.Controller, log logger.ILog, config profilux.Settings) {
 
 	var sensor *models.LevelSensor
 	items, err := repo.GetLevelSensors()
@@ -238,7 +235,7 @@ func clearLevelAlarm(id string, repo data.ControllerService) {
 		return
 	}
 
-	profiluxController, err := profilux.NewController(settings.Connection)
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "unable to connect")
 	}
@@ -263,7 +260,7 @@ func clearLevelAlarm(id string, repo data.ControllerService) {
 		return
 	}
 }
-func waterChange(id string, repo data.ControllerService) {
+func waterChange(id string, repo service.Controller, log logger.ILog, config profilux.Settings) {
 	var sensor *models.LevelSensor
 
 	sensors, err := repo.GetLevelSensors()
@@ -284,7 +281,7 @@ func waterChange(id string, repo data.ControllerService) {
 		return
 	}
 
-	profiluxController, err := profilux.NewController(settings.Connection)
+	profiluxController, err := profilux.NewController(config)
 	if err != nil {
 		log.Errorf(err, "unable to connect")
 	}

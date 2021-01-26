@@ -3,11 +3,11 @@ package update
 import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/common/profilux/types"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
-func digitalInputs(controller *profilux.Controller, repo data.ControllerService) error {
+func digitalInputs(controller *profilux.Controller, repo service.Controller) error {
 	count, err := controller.GetDigitalInputCount()
 	if err != nil {
 		return err
@@ -20,11 +20,11 @@ func digitalInputs(controller *profilux.Controller, repo data.ControllerService)
 		}
 
 		sensor, err := repo.GetDigitalInput(models.GetID(models.DigitalInputType, i))
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 		if mode != types.DigitalInputFunctionNotUsed {
 			if !found {
 				sensor = models.NewDigitalInput(i)

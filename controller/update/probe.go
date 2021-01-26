@@ -3,7 +3,7 @@ package update
 import (
 	"github.com/cjburchell/reefstatus/common/models"
 	"github.com/cjburchell/reefstatus/common/profilux/types"
-	"github.com/cjburchell/reefstatus/controller/data"
+	"github.com/cjburchell/reefstatus/controller/service"
 	"github.com/cjburchell/reefstatus/controller/profilux"
 )
 
@@ -67,7 +67,7 @@ func probeUpdateState(probe *models.Probe, controller *profilux.Controller) erro
 	return err
 }
 
-func probes(profiluxController *profilux.Controller, repo data.ControllerService) error {
+func probes(profiluxController *profilux.Controller, repo service.Controller) error {
 
 	count, err := profiluxController.GetSensorCount()
 	if err != nil {
@@ -95,11 +95,11 @@ func probes(profiluxController *profilux.Controller, repo data.ControllerService
 		}
 
 		probe, err := repo.GetProbe(models.GetID(models.ProbeType, i))
-		if err != nil && err != data.ErrNotFound {
+		if err != nil && err != service.ErrNotFound {
 			return err
 		}
 
-		found := err != data.ErrNotFound
+		found := err != service.ErrNotFound
 
 		if active && mode == types.SensorModeNormal {
 			if !found {
