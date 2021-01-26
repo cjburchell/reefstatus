@@ -5,21 +5,21 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
 
-      <ng-template *ngIf="probes.length">
+      <div *ngIf="probes.length">
         <h3><a href="#" (click)="isCollapsed = !isCollapsed"><img src="../assets/media/thermometer.svg" height="32" width="32" />Probes</a> <span *ngIf="probes[0].AlarmEnable" class="label label-danger">Alarm</span></h3>
-        <div class="row" [ngbCollapse]="isCollapsed">
+        <div class="row">
           <app-probe *ngFor="let probe of probes" [probe] = "probe"></app-probe>
         </div>
-      </ng-template>
+      </div>
 
-      <ng-template *ngIf="levelSensors.length">
-        <h3><a href="#" (click)="isCollapsedLevelSensors = !isCollapsedLevelSensors"><img src="../assets/media/water_level.svg" height="32" width="32" />Level Sensors</a> <span *ngIf="levelSensors.AlarmEnable" class="label label-danger">Alarm</span></h3>
-        <ng-container id="levelSensors" class="row" [ngbCollapse]="isCollapsedLevelSensors">
+      <div *ngIf="levelSensors.length">
+        <h3><a href="#" (click)="isCollapsedLevelSensors = !isCollapsedLevelSensors"><img src="../assets/media/water_level.svg" height="32" width="32" />Level Sensors</a></h3>
+        <div id="levelSensors" class="row">
           <div *ngFor="let sensor of levelSensors">
             <app-level-sensor [sensor] = "sensor"></app-level-sensor>
           </div>
-        </ng-container>
-      </ng-template>
+        </div>
+      </div>
     </div>
   </div>
 </div>

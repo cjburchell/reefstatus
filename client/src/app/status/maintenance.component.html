@@ -1,0 +1,5 @@
+
+  <button *ngIf="maintenance" type="button" [ngClass]="{'btn btn_commands btn-success btn-md btn-block' : maintenance.IsActive===true, 'btn btn_commands btn-default btn-md btn-block': maintenance.IsActive === false  }" (click)="onMaintenance()">
+    <img src="../../assets/media/wrench.svg" height="32" width="32" alt=""/> {{maintenance.DisplayName}}
+  </button>
+

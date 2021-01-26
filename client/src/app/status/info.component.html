@@ -1,4 +1,4 @@
-<div [ngClass]="{'card panel-danger': info.Alarm==='On', 'card panel-default': info.Alarm != 'On'}">
+<div *ngIf="info" [ngClass]="{'card panel-danger': info.Alarm==='On', 'card panel-default': info.Alarm != 'On'}">
   <h3 class="card-header">{{info.Model}}</h3>
   <div class="card-body">
     <div class="row">
@@ -26,10 +26,10 @@
     <div class="btn-group-justified">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onFeedPause()"><img src="../assets/media/food.svg" height="32" width="32"  alt=""/> Feed Pause</button>
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onFeedPause()"><img src="../../assets/media/food.svg" height="32" width="32" alt=""/> Feed Pause</button>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onThunderstorm()"><img src="../assets/media/thunder.svg" height="32" width="32"  alt=""/> Thunderstorm</button>
+          <button type="button" class="btn btn-default btn-md btn-block btn_commands" (click)="onThunderstorm()"><img src="../../assets/media/thunder.svg" height="32" width="32" alt=""/> Thunderstorm</button>
         </div>
 
         <app-maintenance *ngFor="let item of info.Maintenance" [maintenance]="item"></app-maintenance>

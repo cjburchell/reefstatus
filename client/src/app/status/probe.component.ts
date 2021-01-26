@@ -1,5 +1,6 @@
 import { Component, Input} from '@angular/core';
-import {Probe} from './controller.service';
+import {Probe} from '../services/contracts/contracts';
+
 
 @Component({
   selector: 'app-probe',
@@ -7,5 +8,5 @@ import {Probe} from './controller.service';
   styleUrls: []
 })
 export class ProbeComponent {
-  @Input() probe: Probe;
+  @Input() probe: Probe | undefined;
 }

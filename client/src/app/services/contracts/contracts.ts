@@ -1,6 +1,3 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
 export interface Maintenance {
   DisplayName: string;
   Index: number;
@@ -94,52 +91,4 @@ export interface Probe  {
   CenterValue: number;
   MaxRange: number;
   MinRange: number;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class ControllerService {
-
-  constructor(private http: HttpClient) { }
-
-  getInfo() {
-    return this.http.get<Info>('/api/v1/controller/info');
-  }
-
-  getProbes() {
-    return this.http.get<Probe[]>('/api/v1/controller/probe');
-  }
-
-  getLevelSesnsors() {
-    return this.http.get<LevelSensor[]>('/api/v1/controller/levelsensor');
-  }
-
-  getSPorts() {
-    return this.http.get<SPort>('/api/v1/controller/sport');
-  }
-
-  getLPorts() {
-    return this.http.get<LPort>('/api/v1/controller/lport');
-  }
-
-  getDigitalInputs() {
-    return this.http.get<DigitalInput>('/api/v1/controller/digitalinput');
-  }
-
-  getPumps() {
-    return this.http.get<Pump>('/api/v1/controller/pump');
-  }
-
-  getProgrammableLogic() {
-    return this.http.get<ProgrammableLogic>('/api/v1/controller/programmablelogic');
-  }
-
-  getDosingPump() {
-    return this.http.get<DosingPump>('/api/v1/controller/dosingpump');
-  }
-
-  getLight() {
-    return this.http.get<Light>('/api/v1/controller/light');
-  }
 }
