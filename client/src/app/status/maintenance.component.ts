@@ -11,7 +11,7 @@ export class MaintenanceComponent {
   @Output() triggered = new EventEmitter();
 
   onMaintenance(): void {
-    if(this.maintenance){
+    if (this.maintenance){
       this.triggered.emit(this.maintenance);
       console.log('Maintenance! ' + this.maintenance.DisplayName);
     }
